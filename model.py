@@ -38,8 +38,41 @@ def gradient_check(analytic_grad, numeric_grad, tol=1e-5):
 # Step 4 - make_activation (not yet solved)
 # TODO: implement
 
-# Step 5 - initialize_weights (not yet solved)
-# TODO: implement
+# Step 5 - initialize_weights
+def initialize_weights(in_dim, out_dim, scheme='he'):
+    """Return (W, b) for a dense layer.
+
+    Inputs:
+      in_dim: int fan-in
+      out_dim: int fan-out
+      scheme: str initialization family (default 'he')
+
+    Returns:
+      W: np.ndarray shape (in_dim, out_dim), finite, symmetry-breaking,
+         scale stable with depth (fan-in dependent)
+      b: np.ndarray shape (out_dim,), near zero
+    """
+    scheme = scheme.lower()
+    if scheme in {"he", "he_normal", "kaiming", "kaiming_normal"}:
+        std = np.sqrt(2 / in_dim)
+        W = np.random.randn(in_dim, out_dim) * std 
+    elif scheme in {"he_uniform", "kaiming_uniform"}:
+        L = np.sqrt(6 / in_dim)   
+        W = np.random.uniform(low  = -L, high = L, size = (in_dim, out_dim))
+    elif scheme in {"lecun", "lecun_normal"}:
+        std = np.sqrt(1 / in_dim)
+        W = np.random.randn(in_dim, out_dim) * std
+    elif scheme in {"lecun_uniform"}:
+        L = np.sqrt(3 / in_dim)
+        W = np.random.uniform(low = -L, high = L, size = (in_dim, out_dim))
+    elif scheme in {"xavier", "xavier_normal", "glorot", "glorot_normal"}:
+        std = np.sqrt(2 / (in_dim + out_dim))
+        W = np.random.randn(in_dim, out_dim) * std 
+    else:
+        L = np.sqrt(6 / (in_dim + out_dim))
+        W = np.random.uniform(low = - L, high = L, size = (in_dim, out_dim))
+    b = np.zeros(out_dim, dtype = W.dtype)
+    return W, b
 
 # Step 6 - make_loss (not yet solved)
 # TODO: implement
